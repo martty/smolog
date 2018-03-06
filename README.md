@@ -1,0 +1,2 @@
+# smolog
+Small logging library
