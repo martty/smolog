@@ -2,7 +2,7 @@
 Small logging library
 
 - Not header only, compiles into only one TU
-- Header only pulls in <memory> and <cstdarg>
+- Header only pulls in `<memory>` and `<cstdarg>`
 - Format string based logging
 - Compiler checks format string at compile time (for now via ugly macros)
 
