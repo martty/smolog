@@ -7,6 +7,7 @@
 
 #include <cstdarg>
 #include <memory>
+#include <iosfwd>
 
 namespace smolog {
 	enum Level : unsigned char {
@@ -90,6 +91,8 @@ namespace smolog {
 #ifndef WORD
 	using WORD = unsigned short;
 #endif
+
+	// colored log for Windows consoles
 	struct wincolor_sink : public sink {
 
 		wincolor_sink(HANDLE std_handle);
@@ -115,10 +118,12 @@ namespace smolog {
 	};
 #endif
 #ifdef _MSC_VER
+	// write to Debug Output in MSVC
 	struct msvc_sink : sink {
 		virtual void write(const message& msg) override;
 	};
 #endif
+	// distribute written content to multiple sinks
 	struct dist_sink : public sink {
 		dist_sink();
 
@@ -130,6 +135,7 @@ namespace smolog {
 		std::unique_ptr<struct _dist_state> _internal;
 	};
 
+	// append to a file, optionally truncating it first
 	struct file_sink : public sink {
 		file_sink(const char * filename, bool truncate = false);
 
@@ -141,9 +147,19 @@ namespace smolog {
 	private:
 		std::unique_ptr<struct _file_state> _internal;
 	};
+	
+	// write to the given std::ostream
+	struct ostream_sink : public sink {
+		ostream_sink(std::ostream&);
+		virtual void write(const message& msg) override;
+		virtual void flush() override;
+	private:
+		std::ostream& ostream;
+	};
 
+	// protect the given sink by locking it for writing / flushing
 	struct mt_sink : public sink {
-		mt_sink(std::shared_ptr<sink> l);
+		mt_sink(std::shared_ptr<sink>);
 
 		virtual void write(const message& msg) override;
 	private:

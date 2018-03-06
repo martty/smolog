@@ -9,6 +9,7 @@
 #include <utility>
 #include <vector>
 #include <mutex>
+#include <iostream>
 
 #include "smolog.hpp"
 
@@ -131,7 +132,7 @@ namespace smolog {
 	}
 };
 
-// Adapted from spdlog https://github.com/gabime/spdlog/blob/master/include/spdlog/sinks/wincolor_sink.h
+// Some sinks adapted from spdlog https://github.com/gabime/spdlog/
 // Copyright(c) 2016 spdlog
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 //
@@ -247,6 +248,16 @@ namespace smolog {
 	file_sink::~file_sink() {
 		fclose(_internal->fd);
 	}
+	
+	ostream_sink::ostream_sink(std::ostream& os) : ostream(os) {}
+
+    void ostream_sink::write(const message & msg){
+        ostream.write(msg.str, msg.size);
+    }
+
+    void ostream_sink::flush() {
+        ostream.flush();
+    }
 
 	mt_sink::mt_sink(std::shared_ptr<sink> l) : wrapped(std::move(l)) {}
 
