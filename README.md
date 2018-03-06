@@ -7,7 +7,7 @@ Small logging library
 - Compiler checks format string at compile time (for now via ugly macros)
 
 
-```
+```cpp
 #include "smolog.hpp"
 
 int main() {
