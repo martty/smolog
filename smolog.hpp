@@ -37,6 +37,9 @@ namespace smolog {
 		void add_sink(std::shared_ptr<sink>);
 		void remove_sink(sink*);
 		void remove_sink(std::shared_ptr<sink>&);
+
+		void set_name(const char* name);
+		const char* get_name() const;
 	
 		void _log(Level level, const char* fmt, ...);
 		void flush();
