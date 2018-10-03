@@ -56,15 +56,13 @@ namespace smolog {
 		remove_sink(s.get());
 	}
 
-	void logger::set_name(const char* name)
-	{
+	void logger::set_name(const char* name) {
 		if (_internal) {
 			_internal->name = name;
 		}
 	}
 
-	const char* logger::get_name() const
-	{
+	const char* logger::get_name() const {
 		if (_internal) {
 			return _internal->name.c_str();
 		}
