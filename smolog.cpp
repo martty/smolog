@@ -56,6 +56,14 @@ namespace smolog {
 		remove_sink(s.get());
 	}
 
+	void logger::set_name(const char* name) {
+		_internal->name = name;
+	}
+
+	const char* logger::get_name() const {
+		return _internal->name.c_str();
+	}
+
 	// [ date time ] [level] [logger_name] message
 	void logger::emit_prompt(Level level) {
 		auto& buf = _internal->buf;
