@@ -46,13 +46,30 @@ namespace smolog {
 
 		logger(const char* name);
 		~logger();
-	private:
+	protected:
 		// [ date time ] [level] [logger_name] message
 		void emit_prompt(Level level);
 		void format(const char* fmt, va_list args1);
 		constexpr const char* level_as_string(Level level) const;
 
 		std::unique_ptr<struct _logger_state> _internal;
+	};
+
+	struct mt_logger : private logger {
+	public:
+		using logger::current_level;
+		using logger::flush_level;
+
+		using logger::add_sink;
+		using logger::remove_sink;
+
+		void _log(Level level, const char* fmt, ...);
+		void flush();
+
+		mt_logger(const char* name);
+		~mt_logger();
+	private:
+		std::unique_ptr<struct _mt_logger_state> _mt_internal;
 	};
 };
 
