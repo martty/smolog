@@ -62,7 +62,12 @@ namespace smolog {
 		auto& name = _internal->name;
 		std::time_t t = std::time(nullptr);
 		char time_buf[100];
-		std::strftime(time_buf, sizeof time_buf, "[ %D %T ]", std::gmtime(&t));
+#ifdef SMOLOG_USE_LOCAL_TIME
+		tm* cal_date = std::localtime(&t);
+#else
+		tm* cal_date = std::gmtime(&t);
+#endif
+		std::strftime(time_buf, sizeof time_buf, "[ %D %T ]", cal_date);
 		auto time_size = strlen(time_buf);
 		auto buf_size = buf.size();
 		auto lnsize = snprintf(nullptr, 0, " [%s] [%s] ", level_as_string(level), name.c_str());
