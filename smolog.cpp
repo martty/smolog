@@ -239,7 +239,7 @@ namespace smolog {
 
 	file_sink::file_sink(const char * filename, bool truncate) : _internal(std::make_unique<_file_state>()){
 		const char * open_flags = truncate ? "w" : "a";
-		int err = fopen_s(&_internal->fd, filename, open_flags);
+		fopen_s(&_internal->fd, filename, open_flags);
 	}
 
 	void file_sink::write(const message & msg) {
