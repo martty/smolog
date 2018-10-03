@@ -58,16 +58,14 @@ namespace smolog {
 
 	void logger::set_name(const char* name)
 	{
-		if (_internal)
-		{
+		if (_internal) {
 			_internal->name = name;
 		}
 	}
 
 	const char* logger::get_name() const
 	{
-		if (_internal)
-		{
+		if (_internal) {
 			return _internal->name.c_str();
 		}
 		return "";
