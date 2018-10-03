@@ -152,9 +152,10 @@ namespace smolog {
 			sink->write({ buf.data(), buf.size() - 1 /* like strlen */, level });
 		}
 
-		if (level >= flush_level)
+		if (level >= flush_level) {
 			// flushes without a mutex to avoid recursive locking
 			logger::flush();
+		}
 
 		buf.clear();
 	}
