@@ -63,6 +63,9 @@ namespace smolog {
 		using logger::add_sink;
 		using logger::remove_sink;
 
+		using logger::set_name;
+		using logger::get_name;
+
 		void _log(Level level, const char* fmt, ...);
 		void flush();
 
