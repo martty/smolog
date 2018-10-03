@@ -131,6 +131,44 @@ namespace smolog {
 	}
 	logger::logger(const char * name) : _internal(std::make_unique<_logger_state>(name)){}
 
+	struct _mt_logger_state {
+		std::mutex log_mutex;
+	};
+
+	void mt_logger::_log(Level level, const char* fmt, ...) {
+		std::lock_guard<std::mutex> guard(_mt_internal->log_mutex);
+
+		auto& buf = _internal->buf;
+		auto& sinks = _internal->sinks;
+
+		if (current_level > level) return;
+		emit_prompt(level);
+		va_list args;
+		va_start(args, fmt);
+		format(fmt, args);
+		va_end(args);
+
+		for (auto& sink : sinks) {
+			sink->write({ buf.data(), buf.size() - 1 /* like strlen */, level });
+		}
+
+		if (level >= flush_level) {
+			// flushes without a mutex to avoid recursive locking
+			logger::flush();
+		}
+
+		buf.clear();
+	}
+
+	void mt_logger::flush() {
+		std::lock_guard<std::mutex> guard(_mt_internal->log_mutex);
+
+		logger::flush();
+	}
+
+	mt_logger::mt_logger(const char* name) : logger(name), _mt_internal(std::make_unique<_mt_logger_state>()){}
+	mt_logger::~mt_logger() {}
+
 	void stdout_sink::write(const message & msg) {
 		fputs(msg.str, stdout);
 	}
