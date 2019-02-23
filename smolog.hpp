@@ -186,6 +186,7 @@ namespace smolog {
 
 		virtual void write(const message& msg) override;
 	private:
+		std::unique_ptr<struct _mt_state> _internal;
 		std::shared_ptr<sink> wrapped;
 	};
 };

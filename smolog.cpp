@@ -310,11 +310,14 @@ namespace smolog {
         ostream.flush();
     }
 
-	mt_sink::mt_sink(std::shared_ptr<sink> l) : wrapped(std::move(l)) {}
+	struct _mt_state {
+		std::mutex mut;
+	};
+
+	mt_sink::mt_sink(std::shared_ptr<sink> l) : _internal(std::make_unique<_mt_state>()), wrapped(std::move(l)) {}
 
 	void mt_sink::write(const message & msg) {
-		static std::mutex mut;
-		std::lock_guard<std::mutex> _(mut);
+		std::lock_guard<std::mutex> _(_internal->mut);
 		wrapped->write(msg);
 	}
 };
